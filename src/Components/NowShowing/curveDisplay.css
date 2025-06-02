@@ -1,0 +1,18 @@
+.curved-divider {
+    width: 90%;
+    height: 100px;
+    margin: 20px auto;
+    background: linear-gradient(90deg, #083344, #0891b2, #083344);
+    border-radius: 50%/2px;
+    box-shadow: 0 1px 8px rgba(8, 145, 178, 0.5);
+    transform: perspective(40px) rotateX(-4deg);
+    position: relative;
+}
+
+/* Media query for mobile devices */
+@media screen and (max-width: 768px) {
+    .curved-divider {
+        width: 100%;
+        height: 50px;
+    }
+}
