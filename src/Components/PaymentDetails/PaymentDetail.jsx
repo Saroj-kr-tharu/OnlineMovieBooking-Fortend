@@ -62,7 +62,7 @@ function PaymentDetail({data}) {
             product_code: 'EPAYTEST' ,
             product_service_charge: 0,
             product_delivery_charge: 0, 
-            success_url: 'http://localhost:3000/payment/complete-payment',
+            success_url: 'http://156.67.110.130:9000/payment/complete-payment',
             failure_url: "https://developer.esewa.com.np/failure", 
             signed_field_names:  "total_amount,transaction_uuid,product_code", 
             signature: data1.hash.signature,
