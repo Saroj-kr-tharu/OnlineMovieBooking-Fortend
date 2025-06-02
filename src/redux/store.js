@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSliceReducer from '../redux/Slices/AuthSlice';
-import bookingSliceReducer from '../redux/Slices/BookingSlice';
+import bookingSliceReducer from '../redux/Slices/bookingSlice';
 import cinemaSliceReducer from '../redux/Slices/CinemaSlice';
 import movieSliceReducer from '../redux/Slices/movieSlice';
 import showSliceReducer from '../redux/Slices/showSlice';
