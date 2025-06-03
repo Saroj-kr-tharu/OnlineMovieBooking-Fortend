@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -66,11 +67,21 @@ function RegisterCom() {
     };
 
     return(
-        <div className="bg-base-100 w-full my-10  rounded-xl max-w-sm shrink-0 shadow-2xl">
+        <motion.div 
+         whileInView={{ z: 0, opacity: 1 }}
+              initial={{ z: -100, opacity: 0 }}
+              transition={{
+                z: { duration: 0.8, ease: "easeIn" },
+                opacity: { duration: 0.8, ease: "easeIn" },
+              }}
+              viewport={{ once: true }}
+
+
+        className="bg-base-100 w-full my-10 border-1 border-yellow-200  rounded-xl max-w-sm shrink-0 shadow-2xl">
             <div className="flex justify-center p-4">
                 <form onSubmit={handleSubmit} className="w-full">
                     <fieldset className="fieldset" disabled={loading}>
-                        {error && <div className="text-error text-sm mb-2">{error}</div>}
+                        <div className="text-4xl mx-auto font-semibold text-yellow-200"> Register  </div>
                         
                         <label className="label">Email</label>
                         <input 
@@ -127,7 +138,7 @@ function RegisterCom() {
                     </fieldset>
                 </form>
             </div>
-        </div>
+        </motion.div>
     );
 }
 

@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -47,12 +48,22 @@ function LoginCom() {
         }
   };
 
-  return (
-    <div className="bg-base-100 w-full  mt-20  rounded-xl max-w-sm shrink-0 shadow-2xl">
+  return ( 
+    <motion.div
+    whileInView={{ z: 0, opacity: 1 }}
+              initial={{ z: -100, opacity: 0 }}
+              transition={{
+                z: { duration: 0.8, ease: "easeIn" },
+                opacity: { duration: 0.8, ease: "easeIn" },
+              }}
+              viewport={{ once: true }}
+
+    className="bg-base-100 w-full  mt-20  rounded-xl border-1 border-yellow-200 max-w-sm shrink-0 shadow-2xl">
+
       <div className="flex justify-center p-4">
-        <form onSubmit={handleSubmit} className="w-full">
+        <form onSubmit={handleSubmit} className="w-full ">
           <fieldset className="fieldset">
-            
+            <div className="text-4xl mx-auto font-semibold text-yellow-200"> Login  </div>
             <label className="label">Email</label>
             <input
               type="email"
@@ -93,7 +104,8 @@ function LoginCom() {
           </fieldset>
         </form>
       </div>
-    </div>
+
+    </motion.div>
   );
 }
 

@@ -156,9 +156,9 @@ function MovieBookingComponent({data}) {
             opacity: { duration: 0.8 },
             scale: { duration: 0.6 }
             }}
-        className="flex flex-col gap-y-4">
+        className="flex flex-col gap-y-4 ">
             {/* Date Selection Section */}
-            <div className={`w-4/5 sm:w-full ${!isDateSectionCollapsed ? 'bg-neutral-700' : ''} rounded-sm py-4 px-6`}>
+            <div className={`w-full sm:w-full ${!isDateSectionCollapsed ? 'bg-neutral-700' : ''} rounded-sm py-4 px-6`}>
                 <div 
                     id="headerSection" 
                     className={`flex text-xs md:text-xl font-semibold hover:cursor-pointer items-center justify-between ${isDateSectionCollapsed ? 'bg-neutral-700 px-4 py-2 rounded-sm' : ''}`}
@@ -280,7 +280,7 @@ function MovieBookingComponent({data}) {
 
             {/* Seats Selection Section - Only show interactive version if date and time are selected */}
             {selectedDate && selectedTimeSlot && selectedCinema !== "All"  ? (
-                <div className={`w-4/5 sm:w-full ${!isSeatsCollapsed ? 'bg-neutral-700' : ''} rounded-sm py-4 px-6`}>
+                <div className={`w-full sm:w-full ${!isSeatsCollapsed ? 'bg-neutral-700' : ''} rounded-sm py-4 px-6`}>
                     <div 
                         id="headerSection" 
                         className={`flex font-semibold hover:cursor-pointer items-center justify-between ${isSeatsCollapsed ? 'bg-neutral-700 px-4 py-2 rounded-sm' : ''}`}
@@ -332,7 +332,7 @@ function MovieBookingComponent({data}) {
                                     {/* If no seats are available from API, show dummy seats */}
                                     {Object.keys(seatMap).length === 0 && (
                                         <>
-                                            <div className="flex">
+                                            <div className="flex flex-wrap">
                                                 <div>A</div>
                                                 <div className="ml-10 flex gap-x-2">
                                                     {[1, 2, 3, 4].map((seatNumber) => (

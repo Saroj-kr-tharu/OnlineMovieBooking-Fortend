@@ -1,16 +1,29 @@
-import logo from "../../assets/logo_dark.png";
+import logo from "../../assets/logo_dark.svg";
 
 import { Link, useNavigate } from "react-router-dom";
 
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from '../../redux/Slices/AuthSlice';
 import BookingNavbar from '../BookingNavbar/BookingNavbar';
 
 function Header() {
   const authState = useSelector( (state) => state.auth );
+   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
   const dispatch  = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+
 
   const Menu = [
     { title: "Home", link: "/" },
@@ -30,20 +43,22 @@ function Header() {
  
   return (
     <motion.div
-              whileInView={{ y: 0, opacity: 1 }}
-              initial={{ y: -100, opacity: 0 }}
-              transition={{
-                y: { duration: 0.5, ease: "easeIn" },
-                opacity: { duration: 0.5, ease: "easeIn" },
-              }}
-              viewport={{ once: true }}> 
-
+              whileInView={isMobile ? { y: 0, opacity: 1 } : { y: 0, opacity: 1 }}
+      initial={isMobile ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }}
+      transition={{
+        y: { duration: isMobile ? 0 : 0.5, ease: "easeIn" },
+        opacity: { duration: isMobile ? 0 : 0.5, ease: "easeIn" },
+      }}
+      viewport={{ once: true }}
+           >
 
     
     <div className="navbar bg-neutral   shadow-sm">
-      <div className="navbar-start">
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+     
+              {/* Mobile view  */}
+      <div className="navbar-start   ">
+        <div className="dropdown ">
+          <div tabIndex={0} role="button" className="btn py-2 btn-ghost block sm:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -62,7 +77,7 @@ function Header() {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-20 mt-3 w-52 p-2 shadow"
           >
             {Menu.map((item,index) => {
               return (
@@ -78,7 +93,7 @@ function Header() {
           {" "}
           <Link to={"/"}>
             <img
-              className="w-1/4   hover:cursor-pointer"
+              className=" w-full sm:w-4/5   hover:cursor-pointer"
               src={logo}
               alt="logo"
             />{" "}
@@ -86,7 +101,8 @@ function Header() {
         </div>
       </div>
 
-      <div className="navbar-center hidden lg:flex">
+            {/* Desktop View  */}
+      <div className="navbar-center hidden sm:flex">
         <ul className="menu menu-horizontal px-1">
           {Menu.map((item) => {
             return (
@@ -103,7 +119,7 @@ function Header() {
     {authState.isLoggedIn ? (
     // Show when user is logged in
     <button
-      className="btn sm:text-sm text-xs"
+      className="btn btn-xs sm:btn-sm sm:text-sm text-[10px]"
       popoverTarget="popover-1"
       style={{ anchorName: "--anchor-1" }}
     >
@@ -163,6 +179,7 @@ function Header() {
       </>
     )}
   </ul>
+
 </div>
     </div>
           < BookingNavbar />

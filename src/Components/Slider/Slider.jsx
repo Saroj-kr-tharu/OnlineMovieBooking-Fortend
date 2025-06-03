@@ -74,7 +74,7 @@ function Slider() {
             scale: { duration: 0.6 }
           }}
               viewport={{ once: true }}> 
-      <div className="carousel w-full h-[200px] sm:h-[400px]">
+      <div className="carousel w-full h-[300px] sm:h-[70vh]">
         {MoviesList.length > 0 &&  MoviesList.map((item, index) => {
           // Calculate previous and next slide indexes with wrapping
           const prevIndex = index === 0 ? MoviesList.length - 1 : index - 1;
@@ -92,9 +92,9 @@ function Slider() {
 
               <div onClick={()=> BuyFun(item._id)} className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
 
-              <div className='absolute flex-col left-5 sm:left-20 bottom-8 gap-y-3 text-black card-title z-20'>
-                <div className='text-white text-xl sm:text-3xl font-semibold capitalize px-2'>{item.title}</div>
-                <div className='btn btn-sm sm:btn-md btn-primary ml-2' onClick={()=> BuyFun(item._id)} >Buy Now</div>
+              <div className='absolute flex-col  left-5 sm:left-20 bottom-0 sm:bottom-8 gap-y-3 text-black card-title z-20'>
+                <div className='text-white text-xs sm:text-3xl font-semibold capitalize px-2'>{item.title}</div>
+                <div className='btn text-xs sm:text-sm btn-sm sm:btn-md btn-primary ml-2' onClick={()=> BuyFun(item._id)} >Buy Now</div>
               </div>
               
               <div className="absolute z-20 left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">

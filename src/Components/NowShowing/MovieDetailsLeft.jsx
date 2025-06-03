@@ -49,13 +49,13 @@ transition={{
   staggerChildren: 0.1,
   opacity: { duration: 0.8 },
   scale: { duration: 0.6 }
-}} className="bg-base-100 md:ml-4 w-full sm:w-1/4 shadow-sm flex flex-col items-center sm:items-start">
+}} className="bg-base-100 md:ml-4 w-full sm:w-full shadow-sm flex flex-col items-center sm:items-start">
 
             <motion.figure className="flex justify-center ml-4 md:justify-start items-start my-4">
                 <img
                     src={movie.image}
                     alt={movie.title}
-                    className="w-full h-50 rounded-2xl"
+                    className="w-full sm:h-50 h-80 rounded-2xl"
                 />
             </motion.figure>
 
@@ -71,23 +71,24 @@ transition={{
                         <div className="btn btn-xs btn-primary">{movie.duration} mins</div>
                         <div className="btn btn-xs btn-primary ml-2 uppercase font-[10px]">pg</div>
                     </div>
-
-                    <div className="text-xs mt-2 w-4/5 text-justify mx-auto md:mx-0">{movie.description}</div>
                     
-                    <div className="uppercase flex gap-x-2 mt-2 text-[10px] font-semibold mx-auto justify-center md:justify-start">  
+                    <div className="text-xs mt-2 w-4/6 sm:w-4/5 text-justify mx-auto md:mx-0">{movie.description}</div>
+                    
+                    <div className="uppercase flex gap-x-2 mt-2  text-[10px] font-semibold  justify-center sm:mx-auto md:justify-start">  
                         <div className="">Language:</div>    
                         <div className="">Hindi</div>    
                     </div>
 
-                    <div className="uppercase flex gap-x-2 text-[10px] font-semibold mx-auto justify-center md:justify-start">  
+                    <div className="uppercase flex gap-x-2 text-[10px] font-semibold  justify-center sm:mx-auto md:justify-start">  
                         <div className="">Cast:</div>    
                         <div className="">{movie.cast}</div>    
                     </div>
 
-                    <div className="uppercase flex gap-x-2 text-[10px] font-semibold mx-auto justify-center md:justify-start">  
+                    <div className="uppercase flex gap-x-2 text-[10px] font-semibold  justify-center sm:mx-auto md:justify-start">  
                         <div className="">Director:</div>    
                         <div className="">{movie.director}</div>    
                     </div>
+
                 </div>
             </motion.div>
 
