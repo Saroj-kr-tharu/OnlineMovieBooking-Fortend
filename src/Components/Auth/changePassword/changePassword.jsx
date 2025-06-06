@@ -1,9 +1,9 @@
 
 import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { changePasswordReducer } from '../../../redux/Slices/AuthSlice';
-
+import { changePasswordReducer, logoutUser } from '../../../redux/Slices/AuthSlice';
 
 function ChangePassword() {
   const [formData, setFormData] = useState({
@@ -11,6 +11,8 @@ function ChangePassword() {
       oldPassword: "",
       newPassword: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [oldshowPassword, oldsetShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -36,12 +38,13 @@ function ChangePassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // console.log('fomr data => ', formData);
+    console.log('fomr data => ', formData);
     // Basic validation
     if (!formData.email || !formData.newPassword || !formData.oldPassword) return;
       const response = await dispatch(changePasswordReducer(formData));
       resetForm();
      if(response?.payload?.data){
+            dispatch(logoutUser())
             navigate('/login');
         }
   };
@@ -64,26 +67,53 @@ function ChangePassword() {
             />
             
             <label className="label">Old Password</label>
-            <input
-              type="password"
-              name="oldPassword"
-              className="input "
-              placeholder="Old Password"
-              value={formData.oldPassword}
-              onChange={handleChange}
-              required
-            />
-            
-            <label className="label">Password</label>
-            <input
-              type="password"
-              name="newPassword"
-              className="input "
-              placeholder="new Password"
-              value={formData.newPassword}
-              onChange={handleChange}
-              required
-            />
+            <div className="relative w-80">
+                <input
+                  type={oldshowPassword ? "text" : "password"}
+                  name="oldPassword"
+                  className="input w-full"
+                  placeholder="old Password"
+                  value={formData.oldPassword}
+                  onChange={handleChange}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => oldsetShowPassword(!oldshowPassword)} 
+                  className="absolute inset-y-0 right-4 text-xl flex items-center cursor-pointer z-10"
+                >
+                  {oldsetShowPassword ? 
+                    <FaEyeSlash className="text-gray-500 hover:text-gray-700" /> : 
+                    <FaEye className="text-gray-500 hover:text-gray-700" />
+                  }
+                </button>
+              </div>
+
+
+            <label className="label">new Password</label>
+  
+
+           <div className="relative w-80">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="newPassword"
+                className="input w-full"
+                placeholder="new Password"
+                value={formData.newPassword}
+                onChange={handleChange}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)} 
+                className="absolute inset-y-0 right-4 text-xl flex items-center cursor-pointer z-10"
+              >
+                {showPassword ? 
+                  <FaEyeSlash className="text-gray-500 hover:text-gray-700" /> : 
+                  <FaEye className="text-gray-500 hover:text-gray-700" />
+                }
+              </button>
+            </div>
             
             
             

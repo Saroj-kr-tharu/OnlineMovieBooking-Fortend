@@ -78,7 +78,7 @@ function SchedulesCard({data}) {
                 x: { duration: 0.5, ease: "easeIn" },
                 opacity: { duration: 0.5, ease: "easeIn" },
               }}
-              viewport={{ once: true }}
+            //   viewport={{ once: true }}
         
         id="left-side-container" className="w-full md:w-[30%] pr-0 md:pr-4 border-b md:border-b-0 md:border-r border-base-300 flex gap-x-4 pb-4 md:pb-0 mb-4 md:mb-0 card-side">
             {/* Movie Poster */}
@@ -117,7 +117,7 @@ function SchedulesCard({data}) {
                 x: { duration: 0.5, ease: "easeIn" },
                 opacity: { duration: 0.5, ease: "easeIn" },
               }}
-              viewport={{ once: true }}
+            //   viewport={{ once: true }}
         
         id="right-side" className="w-full md:w-[70%] pl-0 md:pl-4">
             {/* Days row */}

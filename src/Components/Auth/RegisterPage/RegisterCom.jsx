@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from '../../../redux/Slices/AuthSlice';
@@ -8,6 +9,8 @@ import { register } from '../../../redux/Slices/AuthSlice';
 function RegisterCom() { 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [password, setpassword] = useState();
+    const [confirmPassword, confirmSetpassword] = useState();
 
     // Form states
     const [formData, setFormData] = useState({
@@ -96,24 +99,58 @@ function RegisterCom() {
                         
 
                         <label className="label">Password</label>
-                        <input 
-                            type="password" 
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="input" 
-                            placeholder="Password" 
+                       
+
+                        <div className="relative w-80">
+                        <input
+                          type={password ? "text" : "password"}
+                          name="password"
+                          className="input w-full"
+                          placeholder="Password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          required
                         />
+                        <button
+                          type="button"
+                          onClick={() => setpassword(!password)} 
+                          className="absolute inset-y-0 right-4 text-xl flex items-center cursor-pointer z-10"
+                        >
+                          {password ? 
+                            <FaEyeSlash className="text-gray-500 hover:text-gray-700" /> : 
+                            <FaEye className="text-gray-500 hover:text-gray-700" />
+                          }
+                        </button>
+                         </div>
+
+
 
                         <label className="label">Confirm Password</label>
-                        <input 
-                            type="password" 
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            className="input" 
-                            placeholder="Confirm Password" 
-                        />
+                       
+
+                        <div className="relative w-80">
+              <input
+                type={confirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                className="input w-full"
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => confirmSetpassword(!confirmPassword)} 
+                className="absolute inset-y-0 right-4 text-xl flex items-center cursor-pointer z-10"
+              >
+                {confirmPassword ? 
+                  <FaEyeSlash className="text-gray-500 hover:text-gray-700" /> : 
+                  <FaEye className="text-gray-500 hover:text-gray-700" />
+                }
+              </button>
+            </div>
+
+                        
 
                         <div className="mt-2">
                             <Link to="/login" className="link btn btn-xs px-4 py-2 text-center link-hover">

@@ -11,6 +11,20 @@ function MovieBookingComponent({data}) {
     const LocationListShow = useSelector(state => state.show.LocationListShow);
     const navigate = useNavigate();
     const [filteredShowData, setFilteredShowData] = useState([]);
+    
+    // Date section states
+    const [isDateSectionCollapsed, setIsDateSectionCollapsed] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedCinema, setSelectedCinema] = useState("All");
+    const [selectedLanguage, setSelectedLanguage] = useState("All");
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+    const [selectedShowingId, setSelectedShowingId] = useState(null);
+    
+    // Seats section states 
+    const [isSeatsCollapsed, setIsSeatsCollapsed] = useState(false);
+    const [selectedSeats, setSelectedSeats] = useState([]);
+    const [showSummary, setShowSummary] = useState(false);
+    const [seatMap, setSeatMap] = useState({});
 
     useEffect(function() {
         if(LocationListShow.length > 0) {
@@ -20,37 +34,60 @@ function MovieBookingComponent({data}) {
         }
     }, [LocationListShow, data]);
 
-    // Extract date from the filtered data
-    const getShowDate = () => {
-        if (filteredShowData && filteredShowData[0]?.showTime?.length > 0) {
-            return new Date(filteredShowData[0].showTime[0]);
-        }
-        return null;
-    }; 
- 
-    const showDate = getShowDate();
-    const showDay = showDate?.getDate();
-    const showMonth = showDate ? showDate.toLocaleString('default', { month: 'short' }).toLowerCase() : '';
-    const showDayName = showDate ? showDate.toLocaleString('default', { weekday: 'short' }) : '';
+    // Extract unique dates from filtered data
+    const getUniqueDates = () => {
+        if (!filteredShowData || filteredShowData.length === 0) return [];
+        
+        // Create a Set to store unique date strings (YYYY-MM-DD)
+        const uniqueDatesSet = new Set();
+        
+        filteredShowData.forEach(show => {
+            show.showTime.forEach(time => {
+                const date = new Date(time);
+                const dateString = date.toISOString().split('T')[0];
+                uniqueDatesSet.add(dateString);
+            });
+        });
+        
+        // Convert to array and sort chronologically
+        return Array.from(uniqueDatesSet).sort();
+    };
 
-    // Date section states
-    const [isDateSectionCollapsed, setIsDateSectionCollapsed] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [selectedCinema, setSelectedCinema] = useState(filteredShowData?.[0]?.cinemaId?.name || "All");
-    const [selectedLanguage, setSelectedLanguage] = useState("All");
-    const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-    
-    // Seats section states 
-    const [isSeatsCollapsed, setIsSeatsCollapsed] = useState(false);
-    const [selectedSeats, setSelectedSeats] = useState([]);
-    const [showSummary, setShowSummary] = useState(false);
-    const [seatMap, setSeatMap] = useState({});
+    const uniqueDates = getUniqueDates();
 
-    // Process seats from API data
+    // Get formatted date information for display
+    const getDateInfo = (dateString) => {
+        const date = new Date(dateString);
+        return {
+            day: date.getDate(),
+            month: date.toLocaleString('default', { month: 'short' }).toLowerCase(),
+            dayName: date.toLocaleString('default', { weekday: 'short' })
+        };
+    };
+
+    // Filter shows by selected date
+    const getShowsForSelectedDate = () => {
+        if (!selectedDate || !filteredShowData) return [];
+        
+        return filteredShowData.filter(show => 
+            show.showTime.some(time => {
+                const showDate = new Date(time);
+                const dateString = showDate.toISOString().split('T')[0];
+                return dateString === selectedDate;
+            })
+        );
+    };
+
+    const showsForSelectedDate = getShowsForSelectedDate();
+
+    // Process seats from selected showing
     useEffect(() => {
-        if (filteredShowData && filteredShowData[0]?.seats) {
+        if (!selectedShowingId || !filteredShowData) return;
+        
+        const selectedShow = filteredShowData.find(show => show._id === selectedShowingId);
+        if (selectedShow && selectedShow.seats) {
             const newSeatMap = {};
-            filteredShowData[0].seats.forEach(seat => {
+            selectedShow.seats.forEach(seat => {
                 const row = seat.seatNumber.charAt(0);
                 const number = seat.seatNumber.substring(1);
                 
@@ -64,8 +101,10 @@ function MovieBookingComponent({data}) {
                 });
             });
             setSeatMap(newSeatMap);
+            // Clear previously selected seats when showing changes
+            setSelectedSeats([]);
         }
-    }, [filteredShowData]);
+    }, [selectedShowingId, filteredShowData]);
 
     // Date section toggle
     const toggleDateSection = () => {
@@ -110,31 +149,39 @@ function MovieBookingComponent({data}) {
     };
 
     const calculateTotalPrice = () => {
-        const defaultPrice = 380;
-        return selectedSeats.length * (filteredShowData?.[0]?.seats?.[0]?.price || defaultPrice);
-        };
+        if (!selectedShowingId) return 0;
+        
+        const selectedShow = filteredShowData.find(show => show._id === selectedShowingId);
+        if (!selectedShow) return 0;
+        
+        const defaultPrice = 300;
+        return selectedSeats.length * (selectedShow?.seats?.[0]?.price || defaultPrice);
+    };
 
     const handleBuyClick = () => {
         setShowSummary(true);
-       
     };
 
-    function confirmBuy(){
-        console.log('filterShowData => ', filteredShowData)
-         const data = {
-            movieLeft: {Movie: filteredShowData[0].movieId.title} ,
-            filteredShowData: filteredShowData,
+    function confirmBuy() {
+        const selectedShow = filteredShowData.find(show => show._id === selectedShowingId);
+        if (!selectedShow) return;
+        
+        const selectedShowTime = selectedTimeSlot ? selectedTimeSlot.split('-')[1] : "";
+        
+        const data = {
+            movieLeft: { Movie: selectedShow.movieId.title },
+            filteredShowData: [selectedShow], // Send only the selected show
             Date: selectedDate,
-            cinema: selectedCinema,
+            cinema: selectedShow.cinemaId.name,
             seats: selectedSeats,
             Language: selectedLanguage,
-            Time: selectedTimeSlot,
+            Time: selectedShowTime,
+            ShowId: selectedShowingId,
             TotalPrice: calculateTotalPrice()
         };
         console.log('data => ', data);
 
         navigate('/payment', { state: data });
-
     }
 
     const seatInfo = [
@@ -147,16 +194,16 @@ function MovieBookingComponent({data}) {
 
     return (
         <motion.div 
-        whileInView={{ y: 0, opacity: 1, scale: 1 }}
+            whileInView={{ y: 0, opacity: 1, scale: 1 }}
             initial={{ y: 50, opacity: 0, scale: 0.95 }}
             transition={{
-            duration: 0.7,
-            ease: [0.25, 0.1, 0.25, 1], // cubic-bezier easing function
-            staggerChildren: 0.1,
-            opacity: { duration: 0.8 },
-            scale: { duration: 0.6 }
+                duration: 0.7,
+                ease: [0.25, 0.1, 0.25, 1], // cubic-bezier easing function
+                staggerChildren: 0.1,
+                opacity: { duration: 0.8 },
+                scale: { duration: 0.6 }
             }}
-        className="flex flex-col gap-y-4 ">
+            className="flex flex-col gap-y-4 ">
             {/* Date Selection Section */}
             <div className={`w-full sm:w-full ${!isDateSectionCollapsed ? 'bg-neutral-700' : ''} rounded-sm py-4 px-6`}>
                 <div 
@@ -174,26 +221,26 @@ function MovieBookingComponent({data}) {
                     <>
                         <div id="selectDate" className="mt-4">
                             <div className="text-sm text-neutral-400 font-semibold">Select date</div>
-                            <div> 
-                                {showDate ? (
+                            <div>
+                                {uniqueDates.length > 0 ? (
                                     <>
-                                        <div className="text-[10px]">{showDate.toDateString()}</div>
                                         <div className="mt-1 flex gap-4">
-                                            <div 
-                                                className={`flex w-10 hover:cursor-pointer hover:bg-primary hover:border-primary flex-col items-center border-1 rounded-sm btn-xs ${selectedDate !=null ? "bg-primary border-primary" : "btn-primary"} space-y-[-2px]`}
-                                               onClick={() => {
-                                                    if (showDate) {
-                                                        const year = showDate.getFullYear();
-                                                        const month = String(showDate.getMonth() + 1).padStart(2, '0');
-                                                        const day = String(showDate.getDate()).padStart(2, '0');
-                                                        setSelectedDate(`${year}-${month}-${day}`);
-                                                    }
-                                                    }}
-                                                     > 
-                                                <span className="text-[10px] opacity-80">{showMonth}</span>    
-                                                <span className="text-base font-bold">{showDay}</span>    
-                                                <span className="text-[10px] opacity-80">{showDayName}</span>    
-                                            </div>
+                                            {uniqueDates.map((dateString) => {
+                                                const dateInfo = getDateInfo(dateString);
+                                                return (
+                                                    <div
+                                                        key={dateString}
+                                                        className={`flex w-10 hover:cursor-pointer hover:bg-primary hover:border-primary flex-col items-center border-1 rounded-sm btn-xs ${
+                                                            selectedDate === dateString ? "bg-primary border-primary" : "btn-primary"
+                                                        } space-y-[-2px]`}
+                                                        onClick={() => setSelectedDate(dateString)}
+                                                    >
+                                                        <span className="text-[10px] opacity-80">{dateInfo.month}</span>
+                                                        <span className="text-base font-bold">{dateInfo.day}</span>
+                                                        <span className="text-[10px] opacity-80">{dateInfo.dayName}</span>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     </>
                                 ) : (
@@ -206,18 +253,23 @@ function MovieBookingComponent({data}) {
                             <div className="text-sm text-neutral-400 capitalize font-semibold">Select Cinemas</div>
                             <div className="flex flex-wrap gap-x-2 gap-y-2 mt-2 text-xs">
                                 <div 
-                                    className={`px-2 py-1 rounded-sm hover:cursor-pointer hover:bg-primary text-[10px] hover:btn-primary ${selectedCinema === "All" ? "bg-primary" : "bg-neutral-800"}`}
+                                    className={`px-2 py-1 rounded-sm hover:cursor-pointer hover:bg-primary text-[10px] hover:btn-primary ${
+                                        selectedCinema === "All" ? "bg-primary" : "bg-neutral-800"
+                                    }`}
                                     onClick={() => setSelectedCinema("All")}
                                 >
                                     All
                                 </div>
-                                {filteredShowData?.map((show, index) => (
+                                {/* Get unique cinema names from filtered shows for selected date */}
+                                {Array.from(new Set(showsForSelectedDate.map(show => show.cinemaId.name))).map((cinemaName, index) => (
                                     <div 
                                         key={index}
-                                        className={`px-2 py-1 rounded-sm hover:cursor-pointer hover:bg-primary text-[10px] hover:btn-primary ${selectedCinema === show.cinemaId.name ? "bg-primary" : "bg-neutral-800"}`}
-                                        onClick={() => setSelectedCinema(show.cinemaId.name)}
+                                        className={`px-2 py-1 rounded-sm hover:cursor-pointer hover:bg-primary text-[10px] hover:btn-primary ${
+                                            selectedCinema === cinemaName ? "bg-primary" : "bg-neutral-800"
+                                        }`}
+                                        onClick={() => setSelectedCinema(cinemaName)}
                                     >
-                                        {show.cinemaId.name}
+                                        {cinemaName}
                                     </div>
                                 ))}
                             </div>
@@ -242,44 +294,71 @@ function MovieBookingComponent({data}) {
                         </div>
 
                         <div id="cinema-with-time-table" className="mt-6 flex flex-col gap-y-8">
-                            {filteredShowData?.map((show, index) => (
-                                <div key={index} id="wrapper" className="flex flex-col sm:flex-row gap-y-3 sm:gap-x-8">
-                                    <div className="text-xs uppercase">
-                                        <div className="font-semibold">{show.cinemaId.name}</div>
-                                        <div className="text-yellow-400 font-semibold">(Screen: {show.screenName})</div>
+                            {showsForSelectedDate
+                                .filter(show => selectedCinema === "All" || show.cinemaId.name === selectedCinema)
+                                .reduce((acc, show) => {
+                                    // Group by cinema name to avoid duplicate cinema entries
+                                    const existingCinema = acc.find(item => item.cinemaId.name === show.cinemaId.name && item.screenName === show.screenName);
+                                    if (existingCinema) {
+                                        // Merge showTimes if this cinema already exists in the accumulator
+                                        existingCinema.showTime = [...new Set([...existingCinema.showTime, ...show.showTime])];
+                                        return acc;
+                                    }
+                                    return [...acc, {...show}];
+                                }, [])
+                                .map((show, index) => (
+                                    <div key={index} id="wrapper" className="flex flex-col sm:flex-row gap-y-3 sm:gap-x-8">
+                                        <div className="text-xs uppercase">
+                                            <div className="font-semibold">{show.cinemaId.name}</div>
+                                            <div className="text-yellow-400 font-semibold">(Screen: {show.screenName})</div>
+                                        </div>
+                                        
+                                        <div className="flex flex-wrap gap-4">
+                                            {show.showTime
+                                                .filter(time => {
+                                                    // Only show times for the selected date
+                                                    const showDate = new Date(time);
+                                                    const dateString = showDate.toISOString().split('T')[0];
+                                                    return dateString === selectedDate;
+                                                })
+                                                .map((time, idx) => {
+                                                    const timeObj = new Date(time);
+                                                    const formattedTime = timeObj.toISOString().substr(11, 5);
+                                                    // Create a unique id for each time slot that includes the show ID
+                                                    const showingId = filteredShowData.find(s => 
+                                                        s.cinemaId.name === show.cinemaId.name && 
+                                                        s.screenName === show.screenName && 
+                                                        s.showTime.some(t => new Date(t).toISOString() === new Date(time).toISOString())
+                                                    )?._id;
+                                                    
+                                                    const timeSlotId = `${show.cinemaId.name}-${formattedTime}-${showingId}`;
+                                                    
+                                                    return (
+                                                        <div key={idx} className="indicator indicator-xs group">
+                                                            <span className="indicator-item indicator-bottom indicator-center badge badge-secondary badge-xs uppercase">2D</span>
+                                                            <button 
+                                                                className={`btn btn-xs ${selectedTimeSlot === timeSlotId ? "btn-success" : "btn-primary group-hover:btn-success"}`}
+                                                                onClick={() => {
+                                                                    setSelectedTimeSlot(timeSlotId);
+                                                                    setSelectedShowingId(showingId);
+                                                                }}
+                                                            >
+                                                                {formattedTime}
+                                                            </button>
+                                                        </div>
+                                                    );
+                                            })}
+                                        </div>
                                     </div>
-                                    
-                                    <div className="flex flex-wrap gap-4">
-                                        {show.showTime.map((time, idx) => {
-                                            
-                                            const timeObj = new Date(time);
-                                           
-                                            const formattedTime = timeObj.toISOString().substr(11, 5);
-                                            const timeSlotId = `${show.cinemaId.name}-${formattedTime}`;
-                                           
-                                            
-                                            return (
-                                                <div key={idx} className="indicator indicator-xs group">
-                                                    <span className="indicator-item indicator-bottom indicator-center badge badge-secondary badge-xs uppercase">2D</span>
-                                                    <button 
-                                                        className={`btn btn-xs ${selectedTimeSlot === timeSlotId ? "btn-success" : "btn-primary group-hover:btn-success"}`}
-                                                        onClick={() => setSelectedTimeSlot(timeSlotId)}
-                                                    >
-                                                        {formattedTime}
-                                                    </button>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            ))}
+                                ))
+                            }
                         </div>
                     </>
                 )}
             </div>
 
             {/* Seats Selection Section - Only show interactive version if date and time are selected */}
-            {selectedDate && selectedTimeSlot && selectedCinema !== "All"  ? (
+            {selectedDate && selectedTimeSlot && selectedCinema !== "All" && selectedShowingId ? (
                 <div className={`w-full sm:w-full ${!isSeatsCollapsed ? 'bg-neutral-700' : ''} rounded-sm py-4 px-6`}>
                     <div 
                         id="headerSection" 
@@ -296,73 +375,41 @@ function MovieBookingComponent({data}) {
                         <>
                             <div className="w-full flex flex-col items-center">
                                 <div className="text-xl font-semibold">Screen</div>
-                                <div className="w-1/2">
+                                <div className="w-10/12 sm:w-1/2">
                                     <div className="curved-divider"></div>
                                 </div>
                             </div>
 
-                            <div id="seats" className="flex flex-col gap-y-4">
+                            <div id="seats" className="flex flex-col items-start sm:items-center gap-y-4">
                                 <div className="flex justify-center border-b-2 border-primary">
                                     <div className="uppercase text-xs font-semibold">
-                                        {filteredShowData && filteredShowData[0]?.seats?.[0]?.price 
-                                            ? `Platinum NPR ${filteredShowData[0].seats[0].price}` 
-                                            : 'Platinum NPR 380'}
+                                        {filteredShowData.find(show => show._id === selectedShowingId)?.seats?.[0]?.price 
+                                            ? `Platinum NPR ${filteredShowData.find(show => show._id === selectedShowingId).seats[0].price}` 
+                                            : 'Platinum NPR 300'}
                                     </div>
                                 </div>
 
-                                <div id="seats-layout" className="flex flex-col gap-y-2">
-                                    {Object.keys(seatMap).map(row => (
-                                        <div key={row} className="flex">
-                                            <div>{row}</div>
-                                            <div className="ml-10 flex gap-x-2">
-                                                {seatMap[row].map(seat => (
-                                                    <img  
-                                                        key={`${row}${seat.number}`}
-                                                        src={seats} 
-                                                        className="w-6 sm:w-8 hover:cursor-pointer" 
-                                                        style={getSeatStyle(row, seat.number, seat.status)} 
-                                                        onClick={() => handleSeatClick(row, seat.number, seat.status)}
-                                                        title={`${row}${seat.number} - ${seat.status}`}
-                                                    />
-                                                ))}
-                                            </div>
-                                        </div>
-                                    ))}
-                                    
-                                    {/* If no seats are available from API, show dummy seats */}
-                                    {Object.keys(seatMap).length === 0 && (
-                                        <>
-                                            <div className="flex flex-wrap">
-                                                <div>A</div>
-                                                <div className="ml-10 flex gap-x-2">
-                                                    {[1, 2, 3, 4].map((seatNumber) => (
+                              <div id="seats-layout" className="flex flex-col items-center sm:items-start gap-y-2">
+                                        {Object.keys(seatMap).map(row => (
+                                            <div key={row} className="flex flex-col  sm:flex-row">
+                                                <div className="w-6 text-center">{row}</div>
+                                               <div className="flex flex-wrap justify-baseline sm:justify-center ml-10 sm:mx-auto max-w-11/12 sm:max-w-none gap-2">
+                                                    {seatMap[row].map(seat => (
                                                         <img  
-                                                            key={`A${seatNumber}`}
+                                                            key={`${row}${seat.number}`}
                                                             src={seats} 
                                                             className="w-6 sm:w-8 hover:cursor-pointer" 
-                                                            style={getSeatStyle('A', seatNumber)} 
-                                                            onClick={() => handleSeatClick('A', seatNumber, "Available")}
+                                                            style={getSeatStyle(row, seat.number, seat.status)} 
+                                                            onClick={() => handleSeatClick(row, seat.number, seat.status)}
+                                                            title={`${row}${seat.number} - ${seat.status}`}
                                                         />
                                                     ))}
                                                 </div>
                                             </div>
-                                            <div className="flex">
-                                                <div>B</div>
-                                                <div className="ml-10 flex gap-x-2">
-                                                    {[1, 2, 3, 4].map((seatNumber) => (
-                                                        <img  
-                                                            key={`B${seatNumber}`}
-                                                            src={seats} 
-                                                            className="w-6 sm:w-8 hover:cursor-pointer" 
-                                                            style={getSeatStyle('B', seatNumber)} 
-                                                            onClick={() => handleSeatClick('B', seatNumber, "Available")}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
+                                        ))}
+                                        
+                                       
+                                    </div>
                             </div>
                             
                             <div id="notice" className="flex border-t-2 border-primary pt-4 gap-x-4 justify-center mt-10">
@@ -381,7 +428,7 @@ function MovieBookingComponent({data}) {
                             {selectedSeats.length > 0 && (
                                 <div className="mt-4 p-2 bg-neutral-800 rounded-md">
                                     <div className="font-semibold mb-1">Selected Seats:</div>
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-wrap gap-2">
                                         {selectedSeats.sort().map(seat => (
                                             <span key={seat} className="px-2 py-1 bg-primary rounded-md text-sm">{seat}</span>
                                         ))}
@@ -404,10 +451,15 @@ function MovieBookingComponent({data}) {
                                     <div className="bg-neutral-800 p-6 rounded-md max-w-md w-full">
                                         <h3 className="text-xl font-bold mb-4">Booking Summary</h3>
                                         <div className="mb-4">
-                                            <div className="font-semibold">Movie: {filteredShowData?.[0]?.movieId?.title || "Unknown"}</div>
-                                            <div className="font-semibold">Cinema: {selectedCinema !== "All" ? selectedCinema : filteredShowData?.[0]?.cinemaId?.name || "Unknown"}</div>
-                                            <div className="font-semibold">Date: {showDate ? showDate.toDateString() : "Unknown"}</div>
-                                            <div className="font-semibold">Time: {selectedTimeSlot ? selectedTimeSlot.split("-")[1] : "Unknown"}</div>
+                                            {selectedShowingId && (
+                                                <>
+                                                    <div className="font-semibold">Movie: {filteredShowData.find(show => show._id === selectedShowingId)?.movieId?.title || "Unknown"}</div>
+                                                    <div className="font-semibold">Cinema: {filteredShowData.find(show => show._id === selectedShowingId)?.cinemaId?.name || "Unknown"}</div>
+                                                    <div className="font-semibold">Screen: {filteredShowData.find(show => show._id === selectedShowingId)?.screenName || "Unknown"}</div>
+                                                    <div className="font-semibold">Date: {selectedDate ? new Date(selectedDate).toDateString() : "Unknown"}</div>
+                                                    <div className="font-semibold">Time: {selectedTimeSlot ? selectedTimeSlot.split("-")[1] : "Unknown"}</div>
+                                                </>
+                                            )}
                                         </div>
                                         <div className="mb-4">
                                             <div className="font-semibold">Selected Seats:</div>
@@ -419,7 +471,7 @@ function MovieBookingComponent({data}) {
                                         </div>
                                         <div className="mb-4">
                                             <div className="font-semibold">Price:</div>
-                                            <div>NPR {selectedSeats.length * (filteredShowData?.[0]?.seats?.[0]?.price || 380)}</div>
+                                            <div>NPR {calculateTotalPrice()}</div>
                                         </div>
                                         <div className="flex justify-end gap-2 mt-6">
                                             <button 
@@ -435,14 +487,12 @@ function MovieBookingComponent({data}) {
                                     </div>
                                 </div>
                             )}
-
-
                         </>
                     )}
                 </div>
             ) : (
                 /* Disabled Choose Seats section when no date/time selected */
-                <div className="w-4/5 sm:w-full bg-neutral-800 rounded-sm py-4 px-6">
+                <div className="w-full sm:w-full bg-neutral-800 rounded-sm py-4 px-6">
                     <div className="flex items-center justify-between opacity-60">
                         <div className="text-xs sm:text-xl font-semibold">2. Choose Seats</div>
                         <div className="text-xs md:text-xl">

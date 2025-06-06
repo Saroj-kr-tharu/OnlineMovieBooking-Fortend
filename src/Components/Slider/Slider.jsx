@@ -1,39 +1,36 @@
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion'; // Corrected import path
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getAllMovie } from '../../redux/Slices/movieSlice';
 
 function Slider() {
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const MoviesList = useSelector((state) => state.movie.movieList);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // Add state variables for drag functionality
+  const [dragStartX, setDragStartX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
     
   function loadShowBylocation(){
       if(MoviesList.length === 0 ){
         dispatch(getAllMovie())
       }
-    }
+  }
  
-    useEffect( ()=> { loadShowBylocation() }, [] )
-
-
+  useEffect( ()=> { loadShowBylocation() }, [] )
     
   function BuyFun(iteam){
       const movie = MoviesList.find((item) => item._id === iteam);
 
-
-    // console.log('The Movie iteam is ', movie.title );
-    const finalData = {
-            Movie: movie?.title
-        }
-       navigate('/nowShowing', {state: finalData});
+      // console.log('The Movie iteam is ', movie.title );
+      const finalData = {
+              Movie: movie?.title
+          }
+         navigate('/nowShowing', {state: finalData});
   }
-
- 
-
-  const [currentIndex, setCurrentIndex] = useState(0);
   
   // Function to navigate to a specific slide
   const navigateToSlide = (index) => {
@@ -62,6 +59,46 @@ function Slider() {
     return () => clearInterval(interval);
   }, [currentIndex, MoviesList.length]);
 
+  // Drag functionality handlers
+  const handleDragStart = (e) => {
+    setIsDragging(true);
+    // Get the starting X position from either mouse or touch event
+    const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+    setDragStartX(clientX);
+  };
+  
+  const handleDragEnd = (e) => {
+    if (!isDragging) return;
+    
+    // Get the ending X position from either mouse or touch event
+    const clientX = e.type.includes('mouse') ? e.clientX : e.changedTouches[0].clientX;
+    const dragDistance = clientX - dragStartX;
+    
+    // Threshold to determine if this is a drag or just a click (in pixels)
+    const dragThreshold = 50;
+    
+    if (Math.abs(dragDistance) > dragThreshold) {
+      if (dragDistance > 0) {
+        // Swiped right - go to previous slide
+        const prevIndex = currentIndex === 0 ? MoviesList.length - 1 : currentIndex - 1;
+        navigateToSlide(prevIndex);
+      } else {
+        // Swiped left - go to next slide
+        const nextIndex = currentIndex === MoviesList.length - 1 ? 0 : currentIndex + 1;
+        navigateToSlide(nextIndex);
+      }
+    }
+    
+    setIsDragging(false);
+  };
+  
+  const handleDragMove = (e) => {
+    if (isDragging) {
+      // Prevent default to stop text selection and page scrolling during drag
+      e.preventDefault();
+    }
+  };
+
   return ( 
      <motion.div
              whileInView={{ y: 0, opacity: 1, scale: 1 }}
@@ -74,7 +111,16 @@ function Slider() {
             scale: { duration: 0.6 }
           }}
               viewport={{ once: true }}> 
-      <div className="carousel w-full h-[300px] sm:h-[70vh]">
+      <div 
+        className={`carousel w-full h-[300px] sm:h-[70vh] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+        onMouseDown={handleDragStart}
+        onMouseUp={handleDragEnd}
+        onMouseMove={handleDragMove}
+        onMouseLeave={(e) => isDragging && handleDragEnd(e)}
+        onTouchStart={handleDragStart}
+        onTouchEnd={handleDragEnd}
+        onTouchMove={handleDragMove}
+      >
         {MoviesList.length > 0 &&  MoviesList.map((item, index) => {
           // Calculate previous and next slide indexes with wrapping
           const prevIndex = index === 0 ? MoviesList.length - 1 : index - 1;
@@ -83,7 +129,6 @@ function Slider() {
           return (
             <div  id={`slide${index}`} key={index} className="carousel-item hover:cursor-pointer relative h-full w-full overflow-hidden">
               <img  
-              
                 src={item.slideImage} 
                 alt={item.alt} 
                 className="w-full h-full object-cover object-center z-10 transition-transform duration-700 ease-in-out" 
@@ -92,19 +137,25 @@ function Slider() {
 
               <div onClick={()=> BuyFun(item._id)} className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
 
-              <div className='absolute flex-col  left-5 sm:left-20 bottom-0 sm:bottom-8 gap-y-3 text-black card-title z-20'>
+              <div className='absolute flex-col left-5 sm:left-20 bottom-0 sm:bottom-8 gap-y-3 text-black card-title z-20'>
                 <div className='text-white text-xs sm:text-3xl font-semibold capitalize px-2'>{item.title}</div>
-                <div className='btn text-xs sm:text-sm btn-sm sm:btn-md btn-primary ml-2' onClick={()=> BuyFun(item._id)} >Buy Now</div>
+                <div className='btn text-xs sm:text-sm btn-sm sm:btn-md btn-primary ml-2' onClick={()=> BuyFun(item._id)}>Buy Now</div>
               </div>
               
               <div className="absolute z-20 left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
                 <button 
                   className="btn w-6 h-6 sm:w-8 sm:h-8 btn-soft btn-circle opacity-80 hover:opacity-100"
-                  onClick={() => navigateToSlide(prevIndex)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering parent click events
+                    navigateToSlide(prevIndex);
+                  }}
                 >❮</button>
                 <button 
                   className="btn w-6 h-6 sm:w-8 sm:h-8 btn-soft btn-circle opacity-80 hover:opacity-100"
-                  onClick={() => navigateToSlide(nextIndex)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering parent click events
+                    navigateToSlide(nextIndex);
+                  }}
                 >❯</button>
               </div>
             </div>

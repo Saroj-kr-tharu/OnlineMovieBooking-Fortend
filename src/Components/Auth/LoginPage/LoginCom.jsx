@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from '../../../redux/Slices/AuthSlice';
@@ -12,6 +13,7 @@ function LoginCom() {
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
+   const [showPassword, setShowPassword] = useState(false);
 
   // reset form 
   function resetForm(){
@@ -76,15 +78,27 @@ function LoginCom() {
             />
             
             <label className="label">Password</label>
-            <input
-              type="password"
-              name="password"
-              className="input "
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+            <div className="relative w-80">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                className="input w-full"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)} 
+                className="absolute inset-y-0 right-4 text-xl flex items-center cursor-pointer z-10"
+              >
+                {showPassword ? 
+                  <FaEyeSlash className="text-gray-500 hover:text-gray-700" /> : 
+                  <FaEye className="text-gray-500 hover:text-gray-700" />
+                }
+              </button>
+            </div>
             
             <div className="mt-2">
               <Link to={'/forgetpassword'} className="link link-hover">Forgot password?</Link>

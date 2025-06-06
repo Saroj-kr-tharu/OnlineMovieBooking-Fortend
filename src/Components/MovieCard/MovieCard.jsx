@@ -13,7 +13,7 @@ function MovieCard({ data }) {
     }
 
     return (
-        <div   onClick={()=> HandleBuyFun()}  className="relative w-11/12 h-96 gap border-1 rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl group">
+        <div   onClick={()=> HandleBuyFun()}  className="relative min-w-11/12 h-96 gap border-1 rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl group">
             {/* Movie poster with consistent sizing */}
             <div className="relative h-80 w-full overflow-hidden">
                 {/* Rating badge */}

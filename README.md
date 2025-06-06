@@ -102,6 +102,26 @@ A comprehensive online movie ticket booking application built with modern web te
 - **Email**: moderator@gmail.com
 - **Password**: moderator
 
+## 💵 Payment Test Credentials
+
+### ESEWA GATEWAY
+- eSewa ID: 9806800001
+- Password: Nepal@123
+- MPIN: 1122 
+- Token: 123456
+
+### KHALTI GATEWAY
+- Test Khalti ID :  9800000005
+- Test MPIN :  1111
+- Test OTP : 987654 
+
+### STRIPE GATEWAY
+- visa :  4242424242424242
+- cvc :  1111
+- expire :12/30
+
+
+
 ## 💡 Usage
 
 1. **For Customers**:

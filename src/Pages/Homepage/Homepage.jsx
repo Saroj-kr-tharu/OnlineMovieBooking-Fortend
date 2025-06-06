@@ -43,20 +43,28 @@ function Homepage() {
                   </div>
 
                   <div className='flex flex-wrap gap-4 '>
-                    {LocationShowList.map((item, index) => (
+                  {
+                  // Filter for unique movies by movie ID
+                  [...new Map(LocationShowList
+                    .filter(item => item?.movieId) // Ensure movieId exists
+                    .map(item => [item.movieId._id || item.movieId.title, item]))
+                    .values()]
+                  .map((item, index) => (
                     <motion.div
-                        whileInView={{ y: 0, opacity: 1 }}
-                        initial={{ y: 100, opacity: 0 }}
-                        transition={{
-                          y: { duration: 0.5, ease: "easeIn" },
-                          opacity: { duration: 0.5, ease: "easeIn" },
-                        }}
-                        viewport={{ once: true }}
-                        className="w-full ml-4 sm:w-1/2 md:w-1/3 lg:w-1/5" key={item?.movieId?.title || index}>
-                            <MovieCard data={item?.movieId} />
-                        
-                        </motion.div> 
-                    ))}
+                      whileInView={{ y: 0, opacity: 1 }}
+                      initial={{ y: 100, opacity: 0 }}
+                      transition={{
+                        y: { duration: 0.5, ease: "easeIn" },
+                        opacity: { duration: 0.5, ease: "easeIn" },
+                      }}
+                      viewport={{ once: true }}
+                      className="w-full ml-4 sm:w-1/2 md:w-1/3 lg:w-1/5" 
+                      key={item?.movieId?._id || item?.movieId?.title || index}
+                    >
+                      <MovieCard data={item.movieId} />
+                    </motion.div> 
+                  ))
+                }
                 </div>
 
               </div>
