@@ -7,17 +7,17 @@ import { motion } from "motion/react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-function MovieBookingComponent({data}) {
+function MovieBookingComponent({data  }) {
     const LocationListShow = useSelector(state => state.show.LocationListShow);
     const navigate = useNavigate();
     const [filteredShowData, setFilteredShowData] = useState([]);
     
     // Date section states
     const [isDateSectionCollapsed, setIsDateSectionCollapsed] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [selectedCinema, setSelectedCinema] = useState("All");
+    const [selectedDate, setSelectedDate] = useState(data?.selectedDate || null);
+    const [selectedCinema, setSelectedCinema] = useState(data?.selectedCinema || "All");
     const [selectedLanguage, setSelectedLanguage] = useState("All");
-    const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState(data?.selectedTime || null);
     const [selectedShowingId, setSelectedShowingId] = useState(null);
     
     // Seats section states 
@@ -27,6 +27,10 @@ function MovieBookingComponent({data}) {
     const [seatMap, setSeatMap] = useState({});
 
     useEffect(function() {
+
+        console.log('data:', data);
+        
+        
         if(LocationListShow.length > 0) {
             const filteredShows = LocationListShow.filter(item => item.movieId.title === data?.Movie);
             setFilteredShowData(filteredShows);
@@ -170,7 +174,7 @@ function MovieBookingComponent({data}) {
         
         const data = {
             movieLeft: { Movie: selectedShow.movieId.title },
-            filteredShowData: [selectedShow], // Send only the selected show
+            filteredShowData: [selectedShow], 
             Date: selectedDate,
             cinema: selectedShow.cinemaId.name,
             seats: selectedSeats,
@@ -230,13 +234,13 @@ function MovieBookingComponent({data}) {
                                                 return (
                                                     <div
                                                         key={dateString}
-                                                        className={`flex w-10 hover:cursor-pointer hover:bg-primary hover:border-primary flex-col items-center border-1 rounded-sm btn-xs ${
+                                                        className={`flex w-10 uppercase font-semibold hover:cursor-pointer border-primary hover:bg-primary hover:border-primary flex-col items-center border-1 rounded-sm btn-xs ${
                                                             selectedDate === dateString ? "bg-primary border-primary" : "btn-primary"
                                                         } space-y-[-2px]`}
                                                         onClick={() => setSelectedDate(dateString)}
                                                     >
                                                         <span className="text-[10px] opacity-80">{dateInfo.month}</span>
-                                                        <span className="text-base font-bold">{dateInfo.day}</span>
+                                                        <span className="text-base  font-bold">{dateInfo.day}</span>
                                                         <span className="text-[10px] opacity-80">{dateInfo.dayName}</span>
                                                     </div>
                                                 );
