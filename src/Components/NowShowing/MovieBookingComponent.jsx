@@ -14,10 +14,10 @@ function MovieBookingComponent({data  }) {
     
     // Date section states
     const [isDateSectionCollapsed, setIsDateSectionCollapsed] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(data?.selectedDate || null);
-    const [selectedCinema, setSelectedCinema] = useState(data?.selectedCinema || "All");
+    const [selectedDate, setSelectedDate] = useState( null);
+    const [selectedCinema, setSelectedCinema] = useState( "All");
     const [selectedLanguage, setSelectedLanguage] = useState("All");
-    const [selectedTimeSlot, setSelectedTimeSlot] = useState(data?.selectedTime || null);
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState( null);
     const [selectedShowingId, setSelectedShowingId] = useState(null);
     
     // Seats section states 
@@ -25,6 +25,8 @@ function MovieBookingComponent({data  }) {
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [showSummary, setShowSummary] = useState(false);
     const [seatMap, setSeatMap] = useState({});
+
+ 
 
     useEffect(function() {
 
@@ -363,7 +365,7 @@ function MovieBookingComponent({data  }) {
 
             {/* Seats Selection Section - Only show interactive version if date and time are selected */}
             {selectedDate && selectedTimeSlot && selectedCinema !== "All" && selectedShowingId ? (
-                <div className={`w-full sm:w-full ${!isSeatsCollapsed ? 'bg-neutral-700' : ''} rounded-sm py-4 px-6`}>
+                <div className={`w-full  ${!isSeatsCollapsed ? 'bg-neutral-700' : ''} rounded-sm py-4 px-6`}>
                     <div 
                         id="headerSection" 
                         className={`flex font-semibold hover:cursor-pointer items-center justify-between ${isSeatsCollapsed ? 'bg-neutral-700 px-4 py-2 rounded-sm' : ''}`}
@@ -393,11 +395,11 @@ function MovieBookingComponent({data  }) {
                                     </div>
                                 </div>
 
-                              <div id="seats-layout" className="flex flex-col items-center sm:items-start gap-y-2">
+                              <div id="seats-layout" className="flex flex-col bg-neutral-700 items-start gap-y-2">
                                         {Object.keys(seatMap).map(row => (
                                             <div key={row} className="flex flex-col  sm:flex-row">
                                                 <div className="w-6 text-center">{row}</div>
-                                               <div className="flex flex-wrap justify-baseline sm:justify-center ml-10 sm:mx-auto max-w-11/12 sm:max-w-none gap-2">
+                                               <div className="flex  justify-baseline sm:justify-center mx-auto max-w-11/12 sm:max-w-none gap-2">
                                                     {seatMap[row].map(seat => (
                                                         <img  
                                                             key={`${row}${seat.number}`}

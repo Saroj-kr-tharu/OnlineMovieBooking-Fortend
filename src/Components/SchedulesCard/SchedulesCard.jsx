@@ -74,7 +74,7 @@ function SchedulesCard({data}) {
 }
 
         console.log('selected date => ', seletectObJ)
-          navigate('/nowShowing', {state:  seletectObJ});
+        //   navigate('/nowShowing', {state:  seletectObJ});
     }
 
     function handleClick(){
@@ -86,7 +86,7 @@ function SchedulesCard({data}) {
     }
     
     return(
-        <motion.div id="wrapper" className="flex flex-col md:flex-row rounded-2xl hover:cursor-pointer px-4 py-6 w-full bg-neutral shadow-lg">
+        <motion.div  onClick={() => handleClick()} id="wrapper" className="flex flex-col md:flex-row rounded-2xl hover:cursor-pointer px-4 py-6 w-full bg-neutral shadow-lg">
             <motion.div
                 whileInView={{ x: 0, opacity: 1 }}
                 initial={{ x: -100, opacity: 0 }}

@@ -3,11 +3,12 @@ import khalti_logo from '../../assets/khalti_logo.png';
 import stripe_logo from '../../assets/stripe-logo.png';
  
 import { motion } from 'motion/react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { BookingIntial } from '../../redux/Slices/bookingSlice';
 
-function PaymentDetail({data}) {
-    // useEffect(function() { console.log('received data => ', data) }, [])
+function PaymentDetail({data}) { 
+    useEffect(function() { console.log('received data => ', data) }, [])
     const dispatch = useDispatch();
 
     const gatewayPayment = [
@@ -16,7 +17,7 @@ function PaymentDetail({data}) {
         {image:stripe_logo, title:'stripe', alt:'stripe'},
     ];
 
-    // Create and submit a form programmatically
+    // Create and submit a form programmatically 
         const submitPayment = (paymentData) => {
         const form = document.createElement('form');
         form.method = 'POST';
@@ -38,7 +39,6 @@ function PaymentDetail({data}) {
         };
 
     async function handlePayment(gateway){ 
-        console.log('gateway => ', gateway);
         const finalData = {
         location: data?.filteredShowData?.[0]?.cinemaId?.location || 'Unknown', 
         cinema: data.cinema,
@@ -46,10 +46,12 @@ function PaymentDetail({data}) {
         screens: data?.filteredShowData?.[0]?.screenName || 'Unknown',
         seats: data.seats,
         Date: data.Date,
-        Time: data?.Time?.split('-')?.[1]?.trim() || 'Unknown',
+        Time: data?.Time || 'Unknown',
         gateway,
         userEmail: localStorage.getItem('email') || null,
     }
+
+        console.log('final data  => ', finalData)
        const response = await dispatch(BookingIntial(finalData));
        if(gateway === 'esewa'){
            console.log('response => ', response?.payload?.data?.data?.data);
