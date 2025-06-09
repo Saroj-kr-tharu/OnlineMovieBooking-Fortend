@@ -2,7 +2,7 @@
     "rewrites": [
         {
             "source": "/api/:path*",
-            "destination": "http://156.67.110.130:9000/:path*"
+            "destination": "${VITE_BACKEND_URL}/:path*"
         },
         {
             "source": "/(.*)",
