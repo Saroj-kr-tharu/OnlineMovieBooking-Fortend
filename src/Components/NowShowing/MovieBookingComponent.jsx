@@ -81,7 +81,7 @@ function MovieBookingComponent({data  }) {
                             }
                         }
                     } 
-                    setIsDateSectionCollapsed(true)
+                    // setIsDateSectionCollapsed(true)
                 }, 100);
             }
         }
