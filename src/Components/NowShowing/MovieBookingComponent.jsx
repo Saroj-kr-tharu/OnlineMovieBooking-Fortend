@@ -14,10 +14,10 @@ function MovieBookingComponent({data  }) {
     
     // Date section states
     const [isDateSectionCollapsed, setIsDateSectionCollapsed] = useState(false);
-    const [selectedDate, setSelectedDate] = useState( null);
-    const [selectedCinema, setSelectedCinema] = useState( "All");
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedCinema, setSelectedCinema] = useState("All");
     const [selectedLanguage, setSelectedLanguage] = useState("All");
-    const [selectedTimeSlot, setSelectedTimeSlot] = useState( null);
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
     const [selectedShowingId, setSelectedShowingId] = useState(null);
     
     // Seats section states 
@@ -27,7 +27,7 @@ function MovieBookingComponent({data  }) {
     const [seatMap, setSeatMap] = useState({});
 
  
-
+ 
     useEffect(function() {
 
         console.log('data:', data);
@@ -37,6 +37,53 @@ function MovieBookingComponent({data  }) {
             const filteredShows = LocationListShow.filter(item => item.movieId.title === data?.Movie);
             setFilteredShowData(filteredShows);
             console.log('Filtered Shows => ', filteredShows);
+        }
+    }, [LocationListShow, data]);
+
+    useEffect(() => {
+        console.log('data:', data);
+        
+        if(LocationListShow.length > 0) {
+            const filteredShows = LocationListShow.filter(item => item.movieId.title === data?.Movie);
+            setFilteredShowData(filteredShows);
+            console.log('Filtered Shows => ', filteredShows);
+            
+            // Auto-select options based on incoming data
+            if (data?.Movie && data?.selectedDate && data?.seletectTime && data?.selectedCinema) {
+                // Set selected date (convert to YYYY-MM-DD format)
+                const dateObj = new Date(data.selectedDate);
+                const formattedDate = dateObj.toISOString().split('T')[0];
+                setSelectedDate(formattedDate);
+                
+                // Set selected cinema
+                setSelectedCinema(data.selectedCinema);
+                
+                
+                // This needs to run after filteredShowData is set
+                setTimeout(() => {
+                    const targetTime = data.seletectTime;
+                    const relevantShows = filteredShows.filter(show => 
+                        show.cinemaId.name === data.selectedCinema
+                    );
+                    
+                    if (relevantShows.length > 0) {
+                        for (const show of relevantShows) {
+                            for (const time of show.showTime) {
+                                const timeObj = new Date(time);
+                                const formattedTime = timeObj.toISOString().substr(11, 5);
+                                
+                                if (formattedTime === targetTime) {
+                                    const timeSlotId = `${show.cinemaId.name}-${formattedTime}-${show._id}`;
+                                    setSelectedTimeSlot(timeSlotId);
+                                    setSelectedShowingId(show._id);
+                                    break;
+                                }
+                            }
+                        }
+                    } 
+                    setIsDateSectionCollapsed(true)
+                }, 100);
+            }
         }
     }, [LocationListShow, data]);
 
