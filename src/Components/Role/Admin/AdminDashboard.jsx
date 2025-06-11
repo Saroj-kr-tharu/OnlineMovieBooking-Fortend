@@ -1,5 +1,5 @@
 
-import { MdConfirmationNumber, MdEventAvailable, MdMovie } from "react-icons/md";
+import { MdConfirmationNumber, MdEventAvailable, MdMovie, MdSlideshow } from "react-icons/md";
 
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
@@ -83,9 +83,10 @@ const mainChartAnalysis =  [
 ]
 
     const data = [
-        {title: 'Total Cinema', value: CinemaList.length, icon: <MdMovie size={40} />},
-        {title: 'Total Renuve', value: totalBook*300, icon: <MdEventAvailable size={40} />},
-        {title: 'Total Location', value: totalLocation?.length, icon: <MdConfirmationNumber size={40} />},
+        {title: 'Total Cinema', value: CinemaList.length, icon: <MdMovie  />},
+        {title: 'Total Renuve', value: totalBook*300, icon: <MdEventAvailable  />},
+        {title: 'Total Location', value: totalLocation?.length, icon: <MdConfirmationNumber  />}, 
+        {title: 'Total Show ', value: ShowList.length, icon: <MdSlideshow />}, 
     ]
 
     return(
@@ -103,17 +104,36 @@ const mainChartAnalysis =  [
 
             <div id="overview" className="flex flex-col gap-y-0">
                 <div> <h2 className="text-2xl font-bold text-primary border-b-2 ">Overview</h2> </div>
-                <div className="flex mt-4  w-full  flex-row justify-baseline sm:justify-center">
-                {
-                    data.map( (item, index) => {
-                        return <InfoCard key={index} data={item} /> 
-                    } )
-                }
+                 <div className="flex mt-4 w-full  flex-row justify-baseline sm:justify-center">
+                                    {
+                                        data.map((item, index) => {
+                                            return (
+                                                <motion.div
+                                                    key={index}
+                                                    whileInView={{ x: 0, opacity: 1 }}
+                                                    initial={{ x: index < 2 ? -100 : 100, opacity: 0 }}
+                                                    transition={{
+                                                        x: { duration: 1, ease: "easeIn" },
+                                                        opacity: { duration: 1, ease: "easeIn" },
+                                                    }}
+                                                    className="w-full  "
+                                                >
+                                                    <InfoCard data={item} /> 
+                                                </motion.div>
+                                            )
+                                        })
+                                    }
             </div>
 
 
               <div className="text-2xl mt-4 border-b-2 text-primary font-semibold" >  Chart Analysis  </div>
-                    <div className="flex sm:flex-row flex-col justify-center ">
+                    <motion.div
+                    whileInView={{ x: 0, opacity: 1 }}
+                        initial={{ x: 100, opacity: 0 }}
+                        transition={{
+                        x: { duration: 1, ease: "easeIn" },
+                        opacity: { duration: 1, ease: "easeIn" },
+                        }} className="flex sm:flex-row flex-col justify-center ">
                         {
                         mainChartAnalysis.map((item, index) => {
                             return (
@@ -123,16 +143,25 @@ const mainChartAnalysis =  [
                             )
                         })
                     }
-                </div>
+                </motion.div>
 
               <div className="text-2xl mt-4 border-b-2 text-primary font-semibold" >  Chart Overview  </div>
               <div className="flex sm:flex-row flex-col justify-center ">
                     {
                     DonotChartData.map((item, index) => {
                         return (
-                            <div key={index} id={`char_basic_donut_${index}`} className="w-full  h-80 mt-6">
+                             <motion.div
+                                    whileInView={{ x: 0, opacity: 1 }}
+                                    initial={{ x: index % 2 === 0 ? 100 : -100, opacity: 0 }}
+                                    transition={{
+                                        x: { duration: 1, ease: "easeIn" },
+                                        opacity: { duration: 1, ease: "easeIn" },
+                                    }} 
+                                    key={index} id={`char_basic_donut_${index}`} 
+                            
+                            className="w-full  h-80 mt-6">
                                 <DonutChartCard chartdata={item} />
-                            </div>
+                            </motion.div>
                         )
                     })
                 }

@@ -48,7 +48,7 @@ function ModeratorCom() {
     {'title': 'Show', icon: FaCalendarAlt},
     {'title': 'Movie', icon: FaFilm},
     ]
-    
+     
     return (
         <motion.div
         whileInView={{ y: 0, opacity: 1, scale: 1 }}
