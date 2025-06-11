@@ -56,7 +56,7 @@ function AddRole() {
             }}
 
 
-    className="w-full rounded-xl max-w-sm shrink-0 shadow-2xl">
+    className="w-full mx-auto rounded-xl max-w-sm shrink-0 shadow-2xl">
         <div className="text-xl font-semibold"> Add Role </div>
       <div className="flex justify-center p-4">
         <form onSubmit={handleSubmit} className="w-full">
