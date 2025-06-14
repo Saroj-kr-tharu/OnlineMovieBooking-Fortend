@@ -31,28 +31,28 @@ function AdminDashboard(){
 
 
 
-useEffect(() => {
-    const unique_locations = [...new Set(CinemaList.map(cinema => cinema.location))];
-    settotalLocation(unique_locations);
-}, [CinemaList]);
+        useEffect(() => {
+            const unique_locations = [...new Set(CinemaList.map(cinema => cinema.location))];
+            settotalLocation(unique_locations);
+        }, [CinemaList]);
 
 
-useEffect(()=> {
-    
-    const total_seats = ShowList.reduce((total, show) => {
-        return total + show.seats.length;
-    }, 0);
-    
-        const total_seat_soldout = ShowList.reduce((total, show) => {
-        const soldOutSeats = show.seats.filter(seat => seat.status === "SoldOut");
-        return total + soldOutSeats.length;
-    }, 0);
-    
-    setTotalSeat(total_seats)
-    setTotalBook(total_seat_soldout)
-    setTotalAvailable(totalSeat-total_seat_soldout || 0)
+        useEffect(()=> {
+            
+            const total_seats = ShowList.reduce((total, show) => {
+                return total + show.seats.length;
+            }, 0);
+            
+                const total_seat_soldout = ShowList.reduce((total, show) => {
+                const soldOutSeats = show.seats.filter(seat => seat.status === "SoldOut");
+                return total + soldOutSeats.length;
+            }, 0);
+            
+            setTotalSeat(total_seats)
+            setTotalBook(total_seat_soldout)
+            setTotalAvailable(totalSeat-total_seat_soldout || 0)
 
-}, [ShowList])
+        }, [ShowList])
 
 
  const DonotChartData = [
@@ -84,7 +84,7 @@ const mainChartAnalysis =  [
 
     const data = [
         {title: 'Total Cinema', value: CinemaList.length, icon: <MdMovie  />},
-        {title: 'Total Renuve', value: totalBook*300, icon: <MdEventAvailable  />},
+        {title: 'Total Revenue', value: totalBook*300, icon: <MdEventAvailable  />},
         {title: 'Total Location', value: totalLocation?.length, icon: <MdConfirmationNumber  />}, 
         {title: 'Total Show ', value: ShowList.length, icon: <MdSlideshow />}, 
     ]
@@ -102,28 +102,28 @@ const mainChartAnalysis =  [
         >
            
 
-            <div id="overview" className="flex flex-col gap-y-0">
+            <div id="overview" className="flex flex-col gap-y-0 overflow-x-hidden">
                 <div> <h2 className="text-2xl font-bold text-primary border-b-2 ">Overview</h2> </div>
-                 <div className="flex mt-4 w-full  flex-row justify-baseline sm:justify-center">
-                                    {
-                                        data.map((item, index) => {
-                                            return (
-                                                <motion.div
-                                                    key={index}
-                                                    whileInView={{ x: 0, opacity: 1 }}
-                                                    initial={{ x: index < 2 ? -100 : 100, opacity: 0 }}
-                                                    transition={{
-                                                        x: { duration: 1, ease: "easeIn" },
-                                                        opacity: { duration: 1, ease: "easeIn" },
-                                                    }}
-                                                    className="w-full  "
-                                                >
-                                                    <InfoCard data={item} /> 
-                                                </motion.div>
-                                            )
-                                        })
-                                    }
-            </div>
+                <div className="flex flex-wrap mt-4 w-full justify-center gap-2">
+    {
+        data.map((item, index) => {
+            return (
+                <motion.div
+                    key={index}
+                    whileInView={{ x: 0, opacity: 1 }}
+                    initial={{ x: index < 2 ? -100 : 100, opacity: 0 }}
+                    transition={{
+                        x: { duration: 1, ease: "easeIn" },
+                        opacity: { duration: 1, ease: "easeIn" },
+                    }}
+                    className="w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-0.5rem)] md:w-60 max-w-xs"
+                >
+                    <InfoCard data={item} /> 
+                </motion.div>
+            )
+        })
+    }
+</div>
 
 
               <div className="text-2xl mt-4 border-b-2 text-primary font-semibold" >  Chart Analysis  </div>

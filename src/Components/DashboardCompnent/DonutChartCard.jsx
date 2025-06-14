@@ -11,9 +11,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 function DonutChartCard({ chartdata }) {
 
-    // useEffect(() => {
-    //     console.log('data in chart card => ', chartdata)
-    // }, [chartdata])
+  
 
    const donutChartData = {
     labels: chartdata.label, 

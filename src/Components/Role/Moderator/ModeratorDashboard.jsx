@@ -81,29 +81,29 @@ const mainChartAnalysis =  [
         >
            
 
-            <div id="overview" className="flex w-full flex-col gap-y-0">
+            <div id="overview" className="flex w-full flex-col gap-y-0 overflow-x-hidden">
                 <div> <h2 className="text-2xl font-bold text-primary border-b-2 ">Overview</h2> </div>
                 
-               <div className="flex mt-4 w-full  flex-row justify-baseline sm:justify-center">
-                    {
-                        data.map((item, index) => {
-                            return (
-                                <motion.div
-                                    key={index}
-                                    whileInView={{ x: 0, opacity: 1 }}
-                                    initial={{ x: index < 2 ? -100 : 100, opacity: 0 }}
-                                    transition={{
-                                        x: { duration: 1, ease: "easeIn" },
-                                        opacity: { duration: 1, ease: "easeIn" },
-                                    }}
-                                    className="w-full  "
-                                >
-                                    <InfoCard data={item} />
-                                </motion.div>
-                            )
-                        })
-                    }
-                </div>
+              <div className="flex flex-wrap mt-4 w-full justify-center gap-2">
+    {
+        data.map((item, index) => {
+            return (
+                <motion.div
+                    key={index}
+                    whileInView={{ x: 0, opacity: 1 }}
+                    initial={{ x: index < 2 ? -100 : 100, opacity: 0 }}
+                    transition={{
+                        x: { duration: 1, ease: "easeIn" },
+                        opacity: { duration: 1, ease: "easeIn" },
+                    }}
+                    className="w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-0.5rem)] md:w-60 max-w-xs"
+                >
+                    <InfoCard data={item} /> 
+                </motion.div>
+            )
+        })
+    }
+</div>
 
 
               <div className="text-2xl mt-4 border-b-2 text-primary font-semibold" >  Chart Analysis  </div>
@@ -126,7 +126,7 @@ const mainChartAnalysis =  [
                     </motion.div>
 
                     <div className="text-2xl mt-4 border-b-2 text-primary font-semibold" >  Chart Overview  </div>
-                    <div className="flex sm:flex-row flex-col justify-center ">
+                    <div className="flex sm:flex-row flex-col justify-center  ">
                    {
                         DonotChartData.map((item, index) => {
                             return (
@@ -137,7 +137,9 @@ const mainChartAnalysis =  [
                                         x: { duration: 1, ease: "easeIn" },
                                         opacity: { duration: 1, ease: "easeIn" },
                                     }} 
-                                    key={index} id={`char_basic_donut_${index}`} className="w-full  h-80 mt-6">
+                                    key={index} id={`char_basic_donut_${index}`} 
+                                    
+                                    className="w-full  h-80 mt-6">
                                     <DonutChartCard chartdata={item} />
                                 </motion.div>
                             )
