@@ -55,6 +55,9 @@ A comprehensive online movie ticket booking application built with modern web te
 ![Payment](./Screenshort/ticketConfirm.png)
 
 ### Admin Features
+- Admin Dashboard
+![Admin](./Screenshort/01_admin_dashboard.png)
+![Admin](./Screenshort/02_admin_dashboard.png)
 - Cinema Management
 ![Admin](./Screenshort/admin.png)
 ![Admin](./Screenshort/adminCinemaAdd.png)
@@ -62,12 +65,36 @@ A comprehensive online movie ticket booking application built with modern web te
 ![Admin](./Screenshort/admin.png)
 
 ### Moderator Features
+- Moderator Dashboard
+![Admin](./Screenshort/01_moderator_dashboard.png)
+![Admin](./Screenshort/02_moderator_dashboard.png)
 - Movie Management
 ![Admin](./Screenshort/moderatorpage.png)
 - Show Management
 ![Admin](./Screenshort/moderatorShowpage.png)
 - Schedule Management
 ![Admin](./Screenshort/shedulespages.png)
+
+
+### Mobile View
+![mobile](./Screenshort/Mobile/01.jpg)
+![mobile](./Screenshort/Mobile/02.jpg)
+![mobile](./Screenshort/Mobile/03.jpg)
+![mobile](./Screenshort/Mobile/04.jpg)
+![mobile](./Screenshort/Mobile/05.jpg)
+![mobile](./Screenshort/Mobile/06.jpg)
+![mobile](./Screenshort/Mobile/07.jpg)
+![mobile](./Screenshort/Mobile/08.jpg)
+![mobile](./Screenshort/Mobile/09.jpg)
+![mobile](./Screenshort/Mobile/10.jpg)
+![mobile](./Screenshort/Mobile/11.jpg)
+![mobile](./Screenshort/Mobile/12.jpg)
+![mobile](./Screenshort/Mobile/13.jpg)
+![mobile](./Screenshort/Mobile/14.jpg)
+![mobile](./Screenshort/Mobile/15.jpg)
+![mobile](./Screenshort/Mobile/16.jpg)
+![mobile](./Screenshort/Mobile/17.jpg)
+![mobile](./Screenshort/Mobile/099.jpg)
 </details>
 
 ## 🛠️ Installation

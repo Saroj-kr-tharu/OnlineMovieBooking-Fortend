@@ -30,7 +30,7 @@ function ModeratorDashboard(){
     
     setTotalSeat(total_seats)
     setTotalBook(total_seat_soldout)
-    setTotalAvailable(totalSeat-total_seat_soldout || 0)
+    setTotalAvailable(total_seats-total_seat_soldout || 0)
 
 }, [ShowList])
 
