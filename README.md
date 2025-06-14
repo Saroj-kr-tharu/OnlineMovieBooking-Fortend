@@ -2,6 +2,8 @@
 
 A comprehensive online movie ticket booking application built with modern web technologies, allowing users to browse movies, select showtimes, choose seats, and complete payments through multiple gateways.
 
+## 🔧 Backend
+- **Repository**: [GitHub - OnlineMovieBooking](https://github.com/Saroj-kr-tharu/OnlineMovieBooking)
 
 
 ## 🚀 Technologies Used
@@ -9,7 +11,7 @@ A comprehensive online movie ticket booking application built with modern web te
 - **Frontend**: React.js
 - **State Management**: Redux
 - **CSS Framework**: Tailwind CSS
-- **UI Components**: Daisy UI
+- **UI Components**: Daisy UI, Chart.js 
 - **Payment Integration**: Stripe, Esewa, Khalti
 
 ## ✨ Features
