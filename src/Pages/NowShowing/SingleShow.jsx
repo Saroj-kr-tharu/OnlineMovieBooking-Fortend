@@ -12,7 +12,7 @@ function SingleShow() {
         <>
         
          <Layout>
-            <div className='flex flex-col sm:flex-row     '>
+            <div className='flex flex-col sm:flex-row  overflow-x-hidden    '>
 
                     <motion.div 
                     whileInView={{ x: 0, opacity: 1 }}

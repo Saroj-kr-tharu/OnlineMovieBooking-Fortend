@@ -3,12 +3,11 @@ import khalti_logo from '../../assets/khalti_logo.png';
 import stripe_logo from '../../assets/stripe-logo.png';
  
 import { motion } from 'motion/react';
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { BookingIntial } from '../../redux/Slices/bookingSlice';
 
 function PaymentDetail({data}) { 
-    useEffect(function() { console.log('received data => ', data) }, [])
+    // useEffect(function() { console.log('received data => ', data) }, [])
     const dispatch = useDispatch();
 
     const gatewayPayment = [
@@ -102,7 +101,7 @@ function PaymentDetail({data}) {
                 opacity: { duration: 0.8 },
                 scale: { duration: 0.6 }
                 }} 
-        className={` w-4/5 sm:w-full  bg-neutral-700 rounded-sm py-4 px-6`}>
+        className={` w-10/12 sm:w-full  bg-neutral-700 rounded-sm py-4 px-6`}>
             <div 
                 id="headerSection" 
                 className={`flex text-xs md:text-xl font-semibold hover:cursor-pointer items-center justify-between}`}

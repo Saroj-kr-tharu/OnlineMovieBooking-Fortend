@@ -11,7 +11,7 @@ function PaymentDetails() {
     return(
        <>
          <Layout>
-            <div className='flex sm:flex-row flex-col'>
+            <div className='flex sm:flex-row flex-col overflow-x-hidden'>
                 <MovieDetailsLeft data={state.movieLeft} /> 
                 <div className='flex ml-10 w-full flex-col'>
                     <div className='text-sm font-semibold px-2 text-primary ml-4 mt-4'>Payment Details</div>

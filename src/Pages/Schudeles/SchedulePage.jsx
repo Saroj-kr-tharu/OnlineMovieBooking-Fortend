@@ -38,8 +38,8 @@ function SchedulePage() {
   return (
     <>
       <Layout>
-        <div className="min-h-[60vh] my-10 flex items-start justify-center">
-            <div className="w-10/12">   
+        <div className="min-h-[60vh] overflow-x-hidden my-10 flex items-start justify-center">
+            <div className="w-11/12 sm:w-10/12">   
                   <motion.div
                     whileInView={{ y: 0, opacity: 1, scale: 1 }}
                     initial={{ y: 0, opacity: 0, scale: 0.95 }}
