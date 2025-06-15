@@ -42,11 +42,11 @@ function Homepage() {
                       <div className="text-xl capitalize text-primary"> Now Showing </div> 
                   </div>
 
-                  <div className='flex flex-wrap gap-4 '>
+                 <div className='flex flex-wrap gap-x-2 gap-y-6 px-2'>
                   {
                   // Filter for unique movies by movie ID
                   [...new Map(LocationShowList
-                    .filter(item => item?.movieId) // Ensure movieId exists
+                    .filter(item => item?.movieId) 
                     .map(item => [item.movieId._id || item.movieId.title, item]))
                     .values()]
                   .map((item, index) => (
@@ -59,13 +59,13 @@ function Homepage() {
                         opacity: { duration: 0.5, ease: "easeIn" },
                       }}
                       viewport={{ once: true }}
-                      className=" w-full ml-4 sm:w-1/2 md:w-1/3 lg:w-1/5" 
+                      className="w-[48%] sm:w-[48%] md:w-[32%] lg:w-[19%]" 
                       key={item?.movieId?._id || item?.movieId?.title || index}
                     >
                       <MovieCard data={item.movieId} />
                     </motion.div> 
                   ))
-                }
+                  }
                 </div>
 
               </div>
