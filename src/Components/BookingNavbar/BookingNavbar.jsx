@@ -51,7 +51,7 @@ function BookingNavbar() {
                 .filter(item => 
                     (!selections.Location || item?.cinemaId?.location === selections.Location) &&
                     (!selections.cinema || item?.cinemaId?.name === selections.cinema)
-                )
+                    )
                 .map(item => item?.movieId?.title)
                 .filter(Boolean))]
         },
@@ -65,7 +65,9 @@ function BookingNavbar() {
                 )
                 .flatMap(item => 
                     (item?.showTime || []).map(time => {
+                        
                         const date = new Date(time);
+                        // console.log(` time => ${time} `)
                         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
                     })
                 )
@@ -89,7 +91,12 @@ function BookingNavbar() {
                         })
                         .map(time => {
                             const date = new Date(time);
-                            return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                            let hours = date.getUTCHours();
+                            const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+                            const ampm = hours >= 12 ? 'PM' : 'AM';
+                            hours = hours % 12;
+                            hours = hours === 0 ? 12 : hours;
+                            return `${hours}:${minutes} ${ampm}`;
                         })
                 )
                 .filter(Boolean))]
@@ -163,8 +170,9 @@ function BookingNavbar() {
 
     // Buy now handler
     const handleBuyNow = () => {
-        // console.log('Booking details:', selections);
-        navigate('/payment', {state: selections} );
+        console.log('Booking details:', selections);
+        // navigate('/payment', {state: selections} );
+        navigate('/nowShowing', {state: selections})
     };
 
     return ( 

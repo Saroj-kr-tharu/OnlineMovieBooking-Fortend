@@ -30,7 +30,7 @@ function MovieBookingComponent({data  }) {
  
     useEffect(function() {
 
-        console.log('data:', data);
+        // console.log('data:', data);
         
         
         if(LocationListShow.length > 0) {
@@ -41,7 +41,7 @@ function MovieBookingComponent({data  }) {
     }, [LocationListShow, data]);
 
     useEffect(() => {
-        console.log('data:', data);
+        // console.log('data:', data);
         
         if(LocationListShow.length > 0) {
             const filteredShows = LocationListShow.filter(item => item.movieId.title === data?.Movie);
@@ -377,6 +377,14 @@ function MovieBookingComponent({data  }) {
                                                 .map((time, idx) => {
                                                     const timeObj = new Date(time);
                                                     const formattedTime = timeObj.toISOString().substr(11, 5);
+
+                                                    let hours = timeObj.getHours();
+                                                    const minutes = timeObj.getMinutes().toString().padStart(2, '0');
+                                                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                                                    hours = hours % 12;
+                                                    hours = hours ? hours : 12; // the hour '0' should be '12'
+                                                    const finalformattedTime = `${hours}:${minutes} ${ampm}`;
+                                                    
                                                     // Create a unique id for each time slot that includes the show ID
                                                     const showingId = filteredShowData.find(s => 
                                                         s.cinemaId.name === show.cinemaId.name && 
@@ -396,7 +404,7 @@ function MovieBookingComponent({data  }) {
                                                                     setSelectedShowingId(showingId);
                                                                 }}
                                                             >
-                                                                {formattedTime}
+                                                                {finalformattedTime}
                                                             </button>
                                                         </div>
                                                     );

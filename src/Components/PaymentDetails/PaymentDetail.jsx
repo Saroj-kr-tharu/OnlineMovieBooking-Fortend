@@ -3,12 +3,14 @@ import khalti_logo from '../../assets/khalti_logo.png';
 import stripe_logo from '../../assets/stripe-logo.png';
  
 import { motion } from 'motion/react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { BookingIntial } from '../../redux/Slices/bookingSlice';
 
 function PaymentDetail({data}) { 
-    // useEffect(function() { console.log('received data => ', data) }, [])
+    useEffect(function() { console.log('received data => ', data) }, [])
     const dispatch = useDispatch();
+    
 
     const gatewayPayment = [
         {image:esewa_logo, title:'esewa', alt:'esewa'},
